@@ -27,34 +27,34 @@ def load_data():
             data=json.load(f)
         return{int(k):v for k,v in data.items()}
     except Exception as e:
-        print("خطأ بقراءة ملف البيانات", e)
+        print("ERROR  READING", e)
         return{}
 def save_movies(movies):
     try:
         with open(data_file,"w",encoding="utf-8")as f:
             json.dump({str(k):v for k,v in movies.items()},f,ensure_ascii=False,indent=2)
     except Exception as e:
-        print("خطأ بقراءة البيانات",e)
+        print("error",e)
 def next_id(movies):
-    """إرجاع ID جديد (أكبر رقم موجود + 1)"""
+    """return ID new (bigger number + 1)"""
     if not movies:
         return 1
     return max(movies.keys()) + 1
 
 def input_nonempty(prompt):
-    """مساعدة: الحصول على إدخال غير فارغ"""
+    """input not empty"""
     while True:
         s = input(prompt).strip()
         if s:
             return s
-        print("لا يمكن ترك الحقل فارغًا.")
+        print("the field must not be empty")
 
 def add_movie(movies):
     print("enter a new film")
-    title=input("اسم الفيلم")
-    director=input("اسم المخرج")
-    year=int(input("سنة الاصدار"))
-    genre=input("نوع الفيلم")
+    title=input(" film's name")
+    director=input("director's name")
+    year=int(input("year's appear "))
+    genre=input("film's genre ")
     movie={
         "title":title,
         "director" :director,
@@ -63,46 +63,46 @@ def add_movie(movies):
     }
     mid=next_id(movies)
     movies[mid]=movie
-    print(f"تم اضافة الفيلم بالمعرف{mid}")
+    print(f"film is added with id{mid}")
 def print_movie(mid,movie):
-       print(f"ID: {mid} | العنوان: {movie.get('title')}  | المخرج: {movie.get('director')} | سنة: {movie.get('year')} | النوع: {movie.get('genre')}")
+    print(f"ID: {mid} | title: {movie.get('title')}  | director: {movie.get('director')} | year: {movie.get('year')} | genre: {movie.get('genre')}")
 def view_all(movies):
-    """عرض كل الأفلام"""
-    print("\n--- عرض كل الأفلام ---")
+    """view all films  """
+    print("\n--- view all films   ---")
     if not movies:
-        print("لا توجد أفلام حالياً.")
+        print("there are not films actually   .")
         return
     for mid in sorted(movies.keys()):
         print_movie(mid, movies[mid])
 def find_movie_by_id(movies):
-    """طلب ID والتحقق من وجوده، ثم إرجاعه أو None"""
+    """id request and check it back"""
     if not movies:
-        print("لا توجد أفلام.")
+        print("there are no films")
         return None
     try:
-        mid = int(input("أدخل الـ ID: ").strip())
+        mid = int(input(" enter ID: ").strip())
     except ValueError:
-        print("الـ ID يجب أن يكون رقماً.")
+        print(" ID must be number ")
         return None
     if mid not in movies:
-        print("لم يتم العثور على فيلم بهذا الـ ID.")
+        print("there is not founf film with this ID.")
         return None
     return mid
 
 def edit_movie(movies):
     """تعديل بيانات فيلم"""
-    print("\n--- تعديل فيلم ---")
+    print("\n---  film edit ---")
     mid = find_movie_by_id(movies)
     if mid is None:
         return
     movie = movies[mid]
-    print("الفيلم الحالي:")
+    print("current film :")
     print_movie(mid, movie)
-    print("اترك الحقل فارغًا إذا لم ترغب بتغييره.")
-    new_title = input("عنوان جديد: ").strip()
-    new_director = input("مخرج جديد: ").strip()
-    new_year = input("سنة إصدار جديدة: ").strip()
-    new_genre = input("نوع جديد: ").strip()
+    print("break the field empty if you don't want to change it.")
+    new_title = input("new title : ").strip()
+    new_director = input("new director : ").strip()
+    new_year = input("new direction year ").strip()
+    new_genre = input("new genre : ").strip()
 
     if new_title:
         movie["title"] = new_title
@@ -116,91 +116,96 @@ def edit_movie(movies):
     if new_genre:
         movie["genre"] = new_genre
         movies[mid] = movie
-        print("تم تعديل بيانات الفيلم.")
+        print("film is edited.")
 def delete_movie(movies):
     """حذف فيلم"""
-    print("\n--- حذف فيلم ---")
+    print("\n--- film deletion  ---")
     mid = find_movie_by_id(movies)
     if mid is None:
         return
-    print("الفيلم الذي ستحذفه:")
+    print(" the film that delete :")
     print_movie(mid, movies[mid])
-    confirm = input("تأكيد الحذف؟ اكتب 'نعم' للحذف: ").strip().lower()
-    if confirm == "نعم" or confirm == "y":
+    confirm = input("write yes to delete ").strip().lower()
+    if confirm == "yes" or confirm == "y":
         del movies[mid]
-        print("تم حذف الفيلم.")
+        print("film is deleted.")
     else:
-        print("تم إلغاء الحذف.")
+        print("deletion canceled  .")
 def filter_movies(movies):
     """فلترة الأفلام حسب معايير"""
     if not movies:
-        print("لا توجد أفلام للفلترة.")
+        print("there are not films to filter.")
         return
-    print("\n--- فلترة الأفلام ---")
-    print("اختر معياراً للفلترة:")
-    print("1. النوع (genre)")
-    print("2. سنة الإصدار")
-    print("3. المخرج")
-    choice = input("اختيار (1-3): ").strip()
+    print("\n--- filtering film  ---")
+    print("  choice film to filter:")
+    print("1.  (genre)")
+    print("2. year apperation ")
+    print("3. director")
+    choice = input("choice (1-3): ").strip()
     if choice == "1":
-        g = input("ادخل النوع: ").strip().lower()
+        g = input(" enter genre: ").strip().lower()
         results = {mid: m for mid, m in movies.items() if str(m.get("genre","")).lower() == g}
     elif choice == "2":
-        y = input("ادخل السنة (مثال: 2020): ").strip()
+        y = input(" enter year (مثال: 2020): ").strip()
         # نقارن كسلاسل أو كأرقام
         def match_year(m):
             val = m.get("year")
             return str(val) == y
         results = {mid: m for mid, m in movies.items() if match_year(m)}
     elif choice == "3":
-        d = input("ادخل اسم المخرج: ").strip().lower()
+        d = input("enter name director ").strip().lower()
         results = {mid: m for mid, m in movies.items() if str(m.get("director","")).lower() == d}
     else:
-        print("خيار غير صالح.")
+        print(" choice is not correct .")
         return
 
     if not results:
-        print("لا توجد نتائج مطابقة للفلترة.")
+        print("no result to filtering.")
         return
-    print(f"\nنتائج الفلترة ({len(results)}):")
+    print(f"\results filtering  ({len(results)}):")
     for mid in sorted(results.keys()):
         print_movie(mid, results[mid])
 
 def main():
     movies = load_data()
-    print("مرحباً بك في نظام إدارة مكتبة الأفلام.")
+    print("welcome in library films")
     while True:
-        print("\n--- القائمة الرئيسية ---")
-        print("1. إضافة فيلم")
-        print("2. تعديل فيلم")
-        print("3. حذف فيلم")
-        print("4. عرض كل الأفلام")
-        print("5. فلترة الأفلام")
-        print("6. حفظ الآن")
-        print("7. خروج (وسيتم الحفظ تلقائياً)")
-        choice = input("اختر خياراً (1-7): ").strip()
+        print("\n--- main list  ---")
+        print("1.  film addition")
+        print("2.  film edition")
+        print("3.  film deletion")
+        print("4. view all films  ")
+        print("5. film filtering ")
+        print("6. save now ")
+        print("7. exit")
+        choice = input(" select choice (1-7): ").strip()
         if choice == "1":
             add_movie(movies)
         elif choice == "2":
             edit_movie(movies)
         elif choice == "3":
-             delete_movie(movies)
+            delete_movie(movies)
         elif choice == "4":
             view_all(movies)
         elif choice == "5":
             filter_movies(movies)
         elif choice == "6":
             save_movies()
-            print("تم حفظ البيانات.")
+            print(" data saving .")
         elif choice == "7":
             save_movies()
-            print("تم الحفظ. جاري الخروج...")
+            print("saved...")
             break
         else:
-            print("خيار غير معروف، حاول مرة أخرى.")
+            print(" choice is not knoen.")
+main()
 
-if __name__ == "__main___":
-    main()
+
+
+
+
+
+
 
 
             
